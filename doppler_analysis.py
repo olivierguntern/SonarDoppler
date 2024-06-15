@@ -2,7 +2,6 @@
 import librosa
 import numpy as np
 import pandas as pd
-from pydub import AudioSegment
 import datetime
 
 # Constants
