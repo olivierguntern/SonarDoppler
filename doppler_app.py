@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import os
@@ -32,7 +32,7 @@ class DopplerApp:
             speeds = analysis.calculate_speeds()
             analysis.generate_csv(speeds)
             self.result_label.config(text="Analysis Complete! Results saved to car_speeds.csv")
-            self.root.quit()  # Fermer la fenêtre après l'analyse
+            self.root.quit()  # Fermer la fenÃªtre aprÃ¨s l'analyse
         except Exception as e:
             messagebox.showerror("Error", str(e))
 

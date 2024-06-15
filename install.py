@@ -1,18 +1,49 @@
 import os
 import sys
 import subprocess
+import urllib.request
+import zipfile
 
-# Installation des bibliothèques nécessaires
+def install_ffmpeg():
+    ffmpeg_url = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"
+    ffmpeg_zip_path = "ffmpeg.zip"
+    ffmpeg_extract_path = "ffmpeg"
+
+    # Télécharger le fichier ZIP de ffmpeg
+    print("Téléchargement de ffmpeg...")
+    urllib.request.urlretrieve(ffmpeg_url, ffmpeg_zip_path)
+    print("Téléchargement terminé.")
+
+    # Extraire le fichier ZIP
+    print("Extraction de ffmpeg...")
+    with zipfile.ZipFile(ffmpeg_zip_path, 'r') as zip_ref:
+        zip_ref.extractall(ffmpeg_extract_path)
+    print("Extraction terminée.")
+
+    # Trouver le chemin du dossier bin
+    for root, dirs, files in os.walk(ffmpeg_extract_path):
+        if "bin" in dirs:
+            ffmpeg_bin_path = os.path.join(root, "bin")
+            break
+
+    # Ajouter le chemin au PATH
+    print("Ajout de ffmpeg au PATH...")
+    os.environ["PATH"] += os.pathsep + ffmpeg_bin_path
+    print("ffmpeg ajouté au PATH.")
+
+    # Vérifier l'installation de ffmpeg
+    try:
+        subprocess.check_call(["ffmpeg", "-version"])
+        print("ffmpeg installé avec succès.")
+    except subprocess.CalledProcessError:
+        print("Erreur lors de l'installation de ffmpeg.")
+
 def install_libraries():
     libraries = ['librosa', 'numpy', 'pandas', 'pydub', 'tk']
     subprocess.check_call([sys.executable, "-m", "pip", "install"] + libraries)
-    # Installation de ffmpeg
-    if os.name == 'nt':  # Pour Windows
-        subprocess.check_call([sys.executable, "-m", "pip", "install", 'imageio[ffmpeg]'])
 
-# Création des fichiers de code
 def create_files():
-    doppler_analysis_code = """
+    doppler_analysis_code = """# -*- coding: utf-8 -*-
 import librosa
 import numpy as np
 import pandas as pd
@@ -90,7 +121,7 @@ class DopplerAnalysis:
         print(df)
 """
 
-    doppler_app_code = """
+    doppler_app_code = """# -*- coding: utf-8 -*-
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import os
@@ -134,13 +165,14 @@ if __name__ == "__main__":
     root.mainloop()
 """
 
-    with open('doppler_analysis.py', 'w') as f:
+    with open('doppler_analysis.py', 'w', encoding='utf-8') as f:
         f.write(doppler_analysis_code)
 
-    with open('doppler_app.py', 'w') as f:
+    with open('doppler_app.py', 'w', encoding='utf-8') as f:
         f.write(doppler_app_code)
 
-# Installation des bibliothèques et création des fichiers
+# Installation de ffmpeg, des bibliothèques et création des fichiers
+install_ffmpeg()
 install_libraries()
 create_files()
 
